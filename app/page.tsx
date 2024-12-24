@@ -1,7 +1,10 @@
 import Image from "next/image";
+import { Navbar } from "./CustomComponents/Navbar";
 
 export default function Home() {
   return (
-    <h1>Hello</h1>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <Navbar/>
+    </div>
   );
 }
