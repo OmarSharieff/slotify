@@ -19,7 +19,7 @@ export function AuthModel() {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[360px]">
         <DialogHeader className="flex items-center gap-2 flex-row justify-center">
-          <DialogTitle>Try Slotify for free</DialogTitle>
+          <DialogTitle></DialogTitle> {/*'DialogTitle' is just here to fix browser rendering issue */} 
           <Image src={Logo} alt="Slotify logo" className="size-10" />
           <h4 className="text-3xl font-semibold">
             Slot<span className="text-primary">ify</span>
