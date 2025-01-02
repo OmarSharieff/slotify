@@ -3,8 +3,24 @@ import Link from "next/link";
 import { ReactNode } from "react";
 import Logo from "@/public/logo.png";
 import { DashboardLinks } from "../CustomComponents/DashboardLinks";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { Menu } from "lucide-react";
+import { ThemeToggle } from "../CustomComponents/ThemeToggle";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
+import { signOut } from "../lib/auth";
+import { requireUser } from "../lib/hooks";
 
-export default function DashboardLayout({ children }: { children: ReactNode }) {
+export default async function DashboardLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const session = await requireUser();
+  const userImage = String(session?.user?.image)
+  
+
   return (
     <>
       <div className="min-h-screen w-full grid md:grid-cols-[220px_1fr] lg:grid-cols-[280_1fr] ">
@@ -19,11 +35,65 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               </Link>
             </div>
             <div className="flex-1 ">
-                <nav className="grid items-start px-2 lg:px-4 ">
-                    <DashboardLinks/>
-                </nav>
+              <nav className="grid items-start px-2 lg:px-4 ">
+                <DashboardLinks />
+              </nav>
             </div>
           </div>
+        </div>
+        <div className="flex flex-col">
+          <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6 ">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  className="md:hidden shrink-0"
+                  size="icon"
+                  variant="outline"
+                >
+                  <Menu className="size-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="flex flex-col">
+                <nav className="grid gap-2 mt-8">
+                  <DashboardLinks />
+                </nav>
+              </SheetContent>
+            </Sheet>
+            <div className="ml-auto flex items-center gap-x-4">
+              <ThemeToggle />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="secondary" size="icon" className="rounded-full">
+                    <img
+                      src={userImage}
+                      alt="Profile Image"
+                      width={20}
+                      height={20}
+                      className="w-full h-full rounded-full"
+                    />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard/settings">Settings</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild >
+                    <form className="w-full" action={async()=> {
+                      "use server"
+                      await signOut();
+                    }}>
+                      <button className="w-full text-left">Log out</button>
+                    </form>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </header>
+          <main>
+            {children}
+          </main>
         </div>
       </div>
     </>
