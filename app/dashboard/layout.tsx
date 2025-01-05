@@ -11,6 +11,16 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { signOut } from "../lib/auth";
 import { requireUser } from "../lib/hooks";
+import prisma from "../lib/db";
+
+async function getData(userId: string) {
+  //fetching user data from prisma
+  const data = await prisma.user.findUnique({
+    where: {
+      id: userId
+    }
+  })
+}
 
 export default async function DashboardLayout({
   children,
@@ -20,7 +30,6 @@ export default async function DashboardLayout({
   const session = await requireUser();
   const userImage = String(session?.user?.image)
   
-
   return (
     <>
       <div className="min-h-screen w-full grid md:grid-cols-[220px_1fr] lg:grid-cols-[280_1fr] ">
