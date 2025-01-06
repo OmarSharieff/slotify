@@ -7,19 +7,34 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { ThemeToggle } from "../CustomComponents/ThemeToggle";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { signOut } from "../lib/auth";
 import { requireUser } from "../lib/hooks";
 import prisma from "../lib/db";
+import { redirect } from "next/navigation";
 
 async function getData(userId: string) {
   //fetching user data from prisma
   const data = await prisma.user.findUnique({
     where: {
-      id: userId
-    }
-  })
+      id: userId,
+    },
+    select: {
+      userName: true,
+    },
+  });
+
+  if (!data?.userName) {
+    return redirect("/onboarding");
+  }
+  return data;
 }
 
 export default async function DashboardLayout({
@@ -28,8 +43,11 @@ export default async function DashboardLayout({
   children: ReactNode;
 }) {
   const session = await requireUser();
-  const userImage = String(session?.user?.image)
-  
+
+  const data = await getData(session.user?.id as string);
+
+  const userImage = String(session?.user?.image);
+
   return (
     <>
       <div className="min-h-screen w-full grid md:grid-cols-[220px_1fr] lg:grid-cols-[280_1fr] ">
@@ -72,7 +90,11 @@ export default async function DashboardLayout({
               <ThemeToggle />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="secondary" size="icon" className="rounded-full">
+                  <Button
+                    variant="secondary"
+                    size="icon"
+                    className="rounded-full"
+                  >
                     <img
                       src={userImage}
                       alt="Profile Image"
@@ -88,11 +110,14 @@ export default async function DashboardLayout({
                   <DropdownMenuItem asChild>
                     <Link href="/dashboard/settings">Settings</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild >
-                    <form className="w-full" action={async()=> {
-                      "use server"
-                      await signOut();
-                    }}>
+                  <DropdownMenuItem asChild>
+                    <form
+                      className="w-full"
+                      action={async () => {
+                        "use server";
+                        await signOut();
+                      }}
+                    >
                       <button className="w-full text-left">Log out</button>
                     </form>
                   </DropdownMenuItem>
