@@ -1,8 +1,12 @@
-import { nylas } from "@/app/lib/nylas";
+import { nylas, nylasConfig } from "@/app/lib/nylas";
+import { redirect } from "next/navigation";
 
 export async function GET() {
   const authUrl = nylas.auth.urlForOAuth2({
-    clientId: "",
-    redirectUri: "",
+    clientId: nylasConfig.clientId,
+    redirectUri: nylasConfig.redirectUri,
   });
+
+  //redirect the user to authUrl
+  return redirect(authUrl);
 }
