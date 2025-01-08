@@ -96,7 +96,18 @@ export function SettingsForm({ fullName, email, profileImage }: iAppProps) {
                 </Button>
               </div>
             ) : (
-              <UploadDropzone endpoint="imageUploader"/>  
+              <UploadDropzone
+                onClientUploadComplete={(res) => {
+                  setCurrentProfileImage(res[0].url);
+                }}
+                onUploadError={(error) => {
+                  console.log(
+                    "Something went wrong while uploading image",
+                    error
+                  );
+                }}
+                endpoint="imageUploader"
+              />
             )}
           </div>
         </CardContent>
