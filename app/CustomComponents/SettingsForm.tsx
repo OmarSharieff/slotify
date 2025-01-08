@@ -19,6 +19,7 @@ import { settingsSchema } from "../lib/zodSchemas";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { UploadDropzone } from "../lib/uploadthing";
+import { toast } from "sonner";
 
 interface iAppProps {
   fullName: string;
@@ -78,6 +79,12 @@ export function SettingsForm({ fullName, email, profileImage }: iAppProps) {
           </div>
           <div className="grid gap-y-5">
             <Label>Profile Image</Label>
+            <input
+              type="hidden"
+              name={fields.profileImage.name}
+              key={fields.profileImage.key}
+              value={currentProfileImage}
+            />
             {currentProfileImage ? (
               <div className="relative size-16">
                 <img
@@ -99,16 +106,19 @@ export function SettingsForm({ fullName, email, profileImage }: iAppProps) {
               <UploadDropzone
                 onClientUploadComplete={(res) => {
                   setCurrentProfileImage(res[0].url);
+                  toast.success("Profile Image has been uploaded");
                 }}
                 onUploadError={(error) => {
                   console.log(
                     "Something went wrong while uploading image",
                     error
                   );
+                  toast.error(error.message);
                 }}
                 endpoint="imageUploader"
               />
             )}
+            <p className="text-red-500 text-sm">{fields.profileImage.errors}</p>
           </div>
         </CardContent>
         <CardFooter>
