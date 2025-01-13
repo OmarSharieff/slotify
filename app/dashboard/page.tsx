@@ -44,7 +44,12 @@ export default async function DashboardPage() {
           href="/dashboard/new"
         />
       ) : (
-        <p>Hey we have data</p>
+        <div className="flex items-center justify-between px-2">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-semibold">Event Types</h1>
+            <p className="text-muted-foreground">Create and manage your event types right here.</p>
+          </div>
+        </div>
       )}
     </>
   );
