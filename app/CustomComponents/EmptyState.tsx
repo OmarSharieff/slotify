@@ -1,4 +1,6 @@
-import { Ban } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Ban, PlusCircle } from "lucide-react";
+import Link from "next/link";
 
 interface iAppProps {
   title: string;
@@ -19,7 +21,14 @@ export function EmptyState({
         <Ban className="size-10 text-primary" />
       </div>
       <h2 className="mt-6 text-xl font-semibold ">{title}</h2>
-      <p className="mb-8 mt-2 text-sm text-muted-foreground max-w-xs mx-auto">{description}</p>
+      <p className="mb-8 mt-2 text-sm text-muted-foreground max-w-xs mx-auto">
+        {description}
+      </p>
+      <Button asChild>
+        <Link href={href}>
+        <PlusCircle className="mr-2 size-4"/>
+        {buttonText}</Link>
+      </Button>
     </div>
   );
 }
