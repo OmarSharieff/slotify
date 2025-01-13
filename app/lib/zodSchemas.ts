@@ -19,33 +19,33 @@ export function onboardingSchemaValidation(options?: {
 }) {
   return z.object({
     userName: z
-    .string()
-    .min(3)
-    .max(150)
-    .regex(/^[a-zA-Z0-9-]+$/, {
-      message: "Username can only contain letters, number and -",
-    })
-    .pipe(
-      z.string().superRefine((_, ctx)=> {
-        if (typeof options?.isUsernameUnique !== "function") {
-          ctx.addIssue({
-            code: 'custom',
-            message: conformZodMessage.VALIDATION_UNDEFINED,
-            fatal: true,
-          });
-          return;
-        }
-        //Now we can check if the username is really unique!
-        return options.isUsernameUnique().then((isUnique)=> {
-          if(!isUnique) {
+      .string()
+      .min(3)
+      .max(150)
+      .regex(/^[a-zA-Z0-9-]+$/, {
+        message: "Username can only contain letters, number and -",
+      })
+      .pipe(
+        z.string().superRefine((_, ctx) => {
+          if (typeof options?.isUsernameUnique !== "function") {
             ctx.addIssue({
               code: "custom",
-              message: "Username is already taken",
+              message: conformZodMessage.VALIDATION_UNDEFINED,
+              fatal: true,
             });
+            return;
           }
-        });
-      })
-    ),
+          //Now we can check if the username is really unique!
+          return options.isUsernameUnique().then((isUnique) => {
+            if (!isUnique) {
+              ctx.addIssue({
+                code: "custom",
+                message: "Username is already taken",
+              });
+            }
+          });
+        })
+      ),
     fullName: z.string().min(3).max(150),
   });
 }
@@ -53,4 +53,12 @@ export function onboardingSchemaValidation(options?: {
 export const settingsSchema = z.object({
   fullName: z.string().min(3).max(150),
   profileImage: z.string(),
-})
+});
+
+export const eventTypeScheme = z.object({
+  title: z.string().min(3).max(150),
+  duration: z.number().min(15).max(60),
+  url: z.string().min(3).max(150),
+  description: z.string().min(3).max(300),
+  videoCallSoftware: z.string().min(3),
+});
