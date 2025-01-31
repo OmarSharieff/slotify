@@ -9,7 +9,7 @@ import {
   onboardingSchemaValidation,
   settingsSchema,
 } from "./lib/zodSchemas";
-import { boolean } from "zod";
+// import { boolean } from "zod";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
