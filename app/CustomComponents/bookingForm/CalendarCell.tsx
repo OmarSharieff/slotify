@@ -38,7 +38,8 @@ export function CalendarCell({
       >
         <div
           className={cn(
-            "size-full rounded-sm flex items-center justify-center text-sm font-semibold"
+            "size-full rounded-sm flex items-center justify-center text-sm font-semibold",
+            isSelected ? "bg-primary text-white" : ""
           )}
         >
           {formattedDate}
