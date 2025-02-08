@@ -1,6 +1,11 @@
 import { useRef } from "react";
 import { CalendarState } from "react-stately";
-import { CalendarDate } from "@internationalized/date";
+import {
+  CalendarDate,
+  getLocalTimeZone,
+  isToday,
+  isSameMonth,
+} from "@internationalized/date";
 import { useCalendarCell, useFocusRing, mergeProps } from "react-aria";
 import { cn } from "@/lib/utils";
 
@@ -26,6 +31,10 @@ export function CalendarCell({
 
   const { focusProps, isFocusVisible } = useFocusRing();
 
+  const isDateToday = isToday(date, getLocalTimeZone());
+
+  const isOutsideOfMonth = !isSameMonth(currentMonth, date);
+
   return (
     <td
       {...cellProps}
@@ -34,15 +43,26 @@ export function CalendarCell({
       <div
         {...mergeProps(buttonProps, focusProps)}
         ref={ref}
-        className="size-10 outline-none group rounded-md"
+        hidden={isOutsideOfMonth}
+        className="size-10 sm:size-12 outline-none group rounded-md"
       >
         <div
           className={cn(
             "size-full rounded-sm flex items-center justify-center text-sm font-semibold",
-            isSelected ? "bg-primary text-white" : ""
+            isDisabled ? "text-muted-foreground cursor-not-allowed" : "",
+            isSelected ? "bg-primary text-white" : "",
+            !isSelected && !isDisabled ? "bg-secondary" : ""
           )}
         >
           {formattedDate}
+          {isDateToday && (
+            <div
+              className={cn(
+                "absolute bottom-3 left-1/2 transform -translate-x-1/2 translate-y-1/2 size-1.5 bg-primary rounded-full",
+                isSelected && "bg-white "
+              )}
+            />
+          )}
         </div>
       </div>
     </td>
