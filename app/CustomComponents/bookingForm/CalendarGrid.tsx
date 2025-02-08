@@ -1,5 +1,5 @@
 // to render all weekdays
-import { useCalendarGrid, useLocale } from "react-aria";
+import { DateValue, useCalendarGrid, useLocale } from "react-aria";
 import {
   getWeeksInMonth,
   DateDuration,
@@ -11,9 +11,11 @@ import { CalendarCell } from "./CalendarCell";
 export function CalendarGrid({
   state,
   offset = {},
+  isDateUnavailable,
 }: {
   state: CalendarState;
   offset?: DateDuration;
+  isDateUnavailable?: (date: DateValue) => boolean;
 }) {
   const startDate = state.visibleRange.start.add(offset);
   const endDate = endOfMonth(startDate);
@@ -45,7 +47,13 @@ export function CalendarGrid({
               .getDatesInWeek(weekIndex)
               .map((date, i) =>
                 date ? (
-                  <CalendarCell currentMonth={startDate} key={i} state={state} date={date} />
+                  <CalendarCell
+                    currentMonth={startDate}
+                    key={i}
+                    state={state}
+                    date={date}
+                    isUnavailable={isDateUnavailable?.(date)}
+                  />
                 ) : (
                   <td key={i} />
                 )
